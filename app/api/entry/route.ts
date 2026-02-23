@@ -54,17 +54,23 @@ export async function POST(request: Request) {
       );
     }
 
+    if (redditUserStatus === "suspended") {
+      return NextResponse.json(
+        {
+          error: "Validasi input gagal.",
+          fieldErrors: {
+            username: ["Akun Reddit sedang suspended/tidak aktif."]
+          }
+        },
+        { status: 400 }
+      );
+    }
+
     if (redditUserStatus === "unavailable") {
-      const checkMode = (process.env.REDDIT_CHECK_MODE ?? "soft").toLowerCase();
-
-      if (checkMode === "strict") {
-        return NextResponse.json(
-          { error: "Gagal verifikasi akun Reddit. Coba lagi beberapa saat." },
-          { status: 503 }
-        );
-      }
-
-      console.warn("Reddit verification unavailable, continuing in soft mode.");
+      return NextResponse.json(
+        { error: "Gagal verifikasi akun Reddit. Coba lagi beberapa saat." },
+        { status: 503 }
+      );
     }
 
     const avgPrice = new Prisma.Decimal(parsed.data.avgPrice);

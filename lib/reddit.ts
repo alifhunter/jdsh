@@ -1,8 +1,11 @@
-export type RedditUserCheckStatus = "exists" | "not_found" | "unavailable";
+export type RedditUserCheckStatus = "exists" | "not_found" | "suspended" | "unavailable";
 
 type RedditUserAboutResponse = {
   data?: {
     name?: string;
+    is_suspended?: boolean;
+    isSuspended?: boolean;
+    suspended?: boolean;
   };
 };
 
@@ -35,7 +38,16 @@ export async function checkRedditUserExists(username: string): Promise<RedditUse
       }
 
       const json = (await response.json()) as RedditUserAboutResponse;
-      const redditName = json.data?.name;
+      const redditData = json.data;
+      const redditName = redditData?.name;
+
+      const isSuspended = Boolean(
+        redditData?.is_suspended ?? redditData?.isSuspended ?? redditData?.suspended
+      );
+
+      if (isSuspended) {
+        return "suspended";
+      }
 
       if (typeof redditName === "string" && redditName.toLowerCase() === username.toLowerCase()) {
         return "exists";

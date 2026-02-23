@@ -84,7 +84,7 @@ export function SubmitForm({ onCreated }: SubmitFormProps) {
     <section className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-card">
       <h2 className="text-xl font-semibold text-ink">Submit Entry</h2>
       <p className="mt-1 text-sm text-slate-500">
-        Username unik, valid: huruf/angka/underscore, maksimal {MAX_USERNAME_LENGTH} karakter.
+        Pakai username reddit kalian.
       </p>
       <p className="mt-1 text-xs text-slate-500">
         Semua entry di leaderboard publik otomatis dimasking (blur mode aktif untuk semua).
