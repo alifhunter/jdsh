@@ -10,14 +10,11 @@ import type { LeaderboardResponse, RankedLeaderboardEntry, TopLoserEntry } from 
 export const dynamic = "force-dynamic";
 
 function maskRankedEntry(entry: RankedLeaderboardEntry): RankedLeaderboardEntry {
-  if (!entry.isBlurred) {
-    return entry;
-  }
-
   return {
     ...entry,
     usernameDisplay: "blurred_user",
     usernameKey: `blurred-${entry.rank}`,
+    isBlurred: true,
     isMasked: true,
     lots: 0,
     avgPrice: 0,
@@ -26,14 +23,11 @@ function maskRankedEntry(entry: RankedLeaderboardEntry): RankedLeaderboardEntry 
 }
 
 function maskLoserEntry(entry: TopLoserEntry): TopLoserEntry {
-  if (!entry.isBlurred) {
-    return entry;
-  }
-
   return {
     ...entry,
     usernameDisplay: "blurred_user",
     usernameKey: `blurred-loss-${entry.lossRank}`,
+    isBlurred: true,
     isMasked: true,
     lots: 0,
     avgPrice: 0,

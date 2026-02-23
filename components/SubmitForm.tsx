@@ -28,10 +28,7 @@ export function SubmitForm({ onCreated }: SubmitFormProps) {
     formState: { errors, isSubmitting }
   } = useForm<EntryInput>({
     resolver: zodResolver(entryInputSchema),
-    mode: "onChange",
-    defaultValues: {
-      blur: false
-    }
+    mode: "onChange"
   });
 
   const lots = watch("lots");
@@ -86,9 +83,12 @@ export function SubmitForm({ onCreated }: SubmitFormProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-card">
       <h2 className="text-xl font-semibold text-ink">Submit Entry</h2>
-      {/* <p className="mt-1 text-sm text-slate-500">
+      <p className="mt-1 text-sm text-slate-500">
         Username unik, valid: huruf/angka/underscore, maksimal {MAX_USERNAME_LENGTH} karakter.
-      </p> */}
+      </p>
+      <p className="mt-1 text-xs text-slate-500">
+        Semua entry di leaderboard publik otomatis dimasking (blur mode aktif untuk semua).
+      </p>
 
       <form className="mt-4 space-y-4" onSubmit={onSubmit} noValidate>
         <div>
@@ -107,20 +107,6 @@ export function SubmitForm({ onCreated }: SubmitFormProps) {
           {errors.username && (
             <p className="mt-1 text-xs font-medium text-red-600">{errors.username.message}</p>
           )}
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-          <label htmlFor="blur" className="flex cursor-pointer items-center gap-3">
-            <input
-              id="blur"
-              type="checkbox"
-              className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-              {...register("blur")}
-            />
-            <span className="text-sm text-slate-700">
-              Blur (mode pengecut). Jika masuk leaderboard, data publik kamu dimasking.
-            </span>
-          </label>
         </div>
 
         <div>

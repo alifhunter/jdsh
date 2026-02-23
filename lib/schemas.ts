@@ -15,7 +15,6 @@ const oversizedMessage = "Nilai terlalu besar";
 
 export const entryInputSchema = z.object({
   username: usernameSchema,
-  blur: z.coerce.boolean().optional().default(false),
   lots: z.coerce
     .number({ invalid_type_error: "Lots harus angka" })
     .finite("Lots harus angka")

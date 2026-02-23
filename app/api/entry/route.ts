@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       data: {
         usernameDisplay,
         usernameKey,
-        isBlurred: parsed.data.blur,
+        isBlurred: true,
         lots: parsed.data.lots,
         avgPrice,
         totalNominal
