@@ -118,7 +118,7 @@ export function SubmitForm({ onCreated }: SubmitFormProps) {
               {...register("blur")}
             />
             <span className="text-sm text-slate-700">
-              Blur (mode pengecut). Jika masuk leaderboard, row kamu diblur.
+              Blur (mode pengecut). Jika masuk leaderboard, data publik kamu dimasking.
             </span>
           </label>
         </div>

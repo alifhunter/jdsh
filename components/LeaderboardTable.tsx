@@ -16,6 +16,10 @@ function getRedditProfileUrl(username: string) {
   return `https://reddit.com/u/${encodeURIComponent(username)}`;
 }
 
+function renderMaskedText(isMasked: boolean, value: string) {
+  return isMasked ? "••••••" : value;
+}
+
 export function LeaderboardTable({
   top10,
   top10Losers,
@@ -101,19 +105,29 @@ export function LeaderboardTable({
                   >
                     <td className="py-3 pr-4 font-semibold text-brand-700">#{entry.rank}</td>
                     <td className="py-3 pr-4 font-medium">
-                      <a
-                        href={getRedditProfileUrl(entry.usernameDisplay)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-ink underline-offset-4 transition hover:text-brand-700 hover:underline"
-                      >
-                        {entry.usernameDisplay}
-                      </a>
+                      {entry.isMasked ? (
+                        <span className="select-none text-slate-500">{entry.usernameDisplay}</span>
+                      ) : (
+                        <a
+                          href={getRedditProfileUrl(entry.usernameDisplay)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-ink underline-offset-4 transition hover:text-brand-700 hover:underline"
+                        >
+                          {entry.usernameDisplay}
+                        </a>
+                      )}
                     </td>
-                    <td className="py-3 pr-4 text-slate-700">{formatInteger(entry.lots)}</td>
-                    <td className="py-3 pr-4 text-slate-700">{formatDecimal(entry.avgPrice)}</td>
+                    <td className="py-3 pr-4 text-slate-700 select-none">
+                      {renderMaskedText(entry.isMasked, formatInteger(entry.lots))}
+                    </td>
+                    <td className="py-3 pr-4 text-slate-700 select-none">
+                      {renderMaskedText(entry.isMasked, formatDecimal(entry.avgPrice))}
+                    </td>
                     <td className="py-3 font-semibold text-slate-800">
-                      {formatRupiah(entry.totalNominal)}
+                      <span className="select-none">
+                        {renderMaskedText(entry.isMasked, formatRupiah(entry.totalNominal))}
+                      </span>
                     </td>
                   </tr>
                 ))
@@ -155,22 +169,34 @@ export function LeaderboardTable({
                   >
                     <td className="py-3 pr-4 font-semibold text-brand-700">#{entry.lossRank}</td>
                     <td className="py-3 pr-4 font-medium">
-                      <a
-                        href={getRedditProfileUrl(entry.usernameDisplay)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-ink underline-offset-4 transition hover:text-brand-700 hover:underline"
-                      >
-                        {entry.usernameDisplay}
-                      </a>
+                      {entry.isMasked ? (
+                        <span className="select-none text-slate-500">{entry.usernameDisplay}</span>
+                      ) : (
+                        <a
+                          href={getRedditProfileUrl(entry.usernameDisplay)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-ink underline-offset-4 transition hover:text-brand-700 hover:underline"
+                        >
+                          {entry.usernameDisplay}
+                        </a>
+                      )}
                     </td>
-                    <td className="py-3 pr-4 text-slate-700">{formatDecimal(entry.avgPrice)}</td>
-                    <td className="py-3 pr-4 text-slate-700">{formatDecimal(entry.marketPrice)}</td>
+                    <td className="py-3 pr-4 text-slate-700 select-none">
+                      {renderMaskedText(entry.isMasked, formatDecimal(entry.avgPrice))}
+                    </td>
+                    <td className="py-3 pr-4 text-slate-700 select-none">
+                      {renderMaskedText(entry.isMasked, formatDecimal(entry.marketPrice))}
+                    </td>
                     <td className="py-3 pr-4 font-semibold text-red-600">
-                      {formatPercent(entry.pnlPercent)}
+                      <span className="select-none">
+                        {renderMaskedText(entry.isMasked, formatPercent(entry.pnlPercent))}
+                      </span>
                     </td>
                     <td className="py-3 font-semibold text-red-600">
-                      {formatRupiah(entry.pnlNominal)}
+                      <span className="select-none">
+                        {renderMaskedText(entry.isMasked, formatRupiah(entry.pnlNominal))}
+                      </span>
                     </td>
                   </tr>
                 ))

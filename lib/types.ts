@@ -3,6 +3,7 @@ export type LeaderboardEntry = {
   usernameDisplay: string;
   usernameKey: string;
   isBlurred: boolean;
+  isMasked: boolean;
   lots: number;
   avgPrice: number;
   totalNominal: number;

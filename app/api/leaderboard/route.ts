@@ -5,9 +5,43 @@ import { buildLeaderboard, buildTopLosers, findMyRank } from "@/lib/leaderboard"
 import { getLatestEmitenPrice } from "@/lib/market";
 import { prisma } from "@/lib/prisma";
 import { normalizeUsername, USERNAME_REGEX } from "@/lib/schemas";
-import type { LeaderboardResponse } from "@/lib/types";
+import type { LeaderboardResponse, RankedLeaderboardEntry, TopLoserEntry } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+function maskRankedEntry(entry: RankedLeaderboardEntry): RankedLeaderboardEntry {
+  if (!entry.isBlurred) {
+    return entry;
+  }
+
+  return {
+    ...entry,
+    usernameDisplay: "blurred_user",
+    usernameKey: `blurred-${entry.rank}`,
+    isMasked: true,
+    lots: 0,
+    avgPrice: 0,
+    totalNominal: 0
+  };
+}
+
+function maskLoserEntry(entry: TopLoserEntry): TopLoserEntry {
+  if (!entry.isBlurred) {
+    return entry;
+  }
+
+  return {
+    ...entry,
+    usernameDisplay: "blurred_user",
+    usernameKey: `blurred-loss-${entry.lossRank}`,
+    isMasked: true,
+    lots: 0,
+    avgPrice: 0,
+    totalNominal: 0,
+    pnlPercent: 0,
+    pnlNominal: 0
+  };
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -35,8 +69,8 @@ export async function GET(request: NextRequest) {
 
     const response: LeaderboardResponse = {
       stats,
-      top10,
-      top10Losers,
+      top10: top10.map(maskRankedEntry),
+      top10Losers: top10Losers.map(maskLoserEntry),
       hiddenCount,
       market
     };

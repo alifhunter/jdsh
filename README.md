@@ -15,7 +15,7 @@ Web app leaderboard holder untuk 1 emiten dengan stack:
 - Tab `Top 10 Loser` berdasarkan perbandingan avg user vs harga sekarang.
 - Harga terakhir emiten ditarik server-side dari Google Finance (tanpa API key).
 - Submit entry holder (username unik case-insensitive, max 200 karakter).
-- Opsi checkbox `blur` untuk menyamarkan row user di leaderboard.
+- Opsi checkbox `blur` untuk memasking data user di leaderboard publik (backend + UI).
 - Tab kanan dipisah: `Submit Entry` dan `Check My Rank`.
 - Total nominal dihitung otomatis dari rumus `lots * 100 * avgPrice` saat submit.
 - Kartu "Posisimu" setelah submit berhasil.
