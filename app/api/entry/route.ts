@@ -67,10 +67,16 @@ export async function POST(request: Request) {
     }
 
     if (redditUserStatus === "unavailable") {
-      return NextResponse.json(
-        { error: "Gagal verifikasi akun Reddit. Coba lagi beberapa saat." },
-        { status: 503 }
-      );
+      const checkMode = (process.env.REDDIT_CHECK_MODE ?? "strict").toLowerCase();
+
+      if (checkMode === "soft") {
+        console.warn("Reddit verification unavailable, continuing in soft mode.");
+      } else {
+        return NextResponse.json(
+          { error: "Gagal verifikasi akun Reddit. Coba lagi beberapa saat." },
+          { status: 503 }
+        );
+      }
     }
 
     const avgPrice = new Prisma.Decimal(parsed.data.avgPrice);
