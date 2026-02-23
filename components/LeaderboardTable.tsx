@@ -7,7 +7,8 @@ import type { RankedLeaderboardEntry, TopLoserEntry } from "@/lib/types";
 
 type LeaderboardTableProps = {
   top10: RankedLeaderboardEntry[];
-  top10Losers: TopLoserEntry[];
+  top10LosersByPercentage: TopLoserEntry[];
+  top10LosersByAmount: TopLoserEntry[];
   currentPrice: number | null;
   hiddenCount: number;
 };
@@ -18,11 +19,13 @@ function getRedditProfileUrl(username: string) {
 
 export function LeaderboardTable({
   top10,
-  top10Losers,
+  top10LosersByPercentage,
+  top10LosersByAmount,
   currentPrice,
   hiddenCount
 }: LeaderboardTableProps) {
   const [activeTab, setActiveTab] = useState<"holders" | "losers">("holders");
+  const [loserSortBy, setLoserSortBy] = useState<"percentage" | "amount">("percentage");
 
   const holderCountLabel = useMemo(() => {
     if (hiddenCount <= 0) {
@@ -31,6 +34,11 @@ export function LeaderboardTable({
 
     return `+${formatInteger(hiddenCount)} holder lainnya`;
   }, [hiddenCount]);
+
+  const top10Losers = useMemo(
+    () => (loserSortBy === "percentage" ? top10LosersByPercentage : top10LosersByAmount),
+    [loserSortBy, top10LosersByAmount, top10LosersByPercentage]
+  );
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-card">
@@ -42,7 +50,9 @@ export function LeaderboardTable({
           <p className="mt-1 text-sm text-slate-500">
             {activeTab === "holders"
               ? "Ranking dihitung dari seluruh entry."
-              : "Loser dihitung dari perbandingan avg user vs harga sekarang."}
+              : loserSortBy === "percentage"
+                ? "Loser diurutkan berdasarkan persentase P/L."
+                : "Loser diurutkan berdasarkan nominal P/L."}
           </p>
         </div>
 
@@ -71,6 +81,22 @@ export function LeaderboardTable({
           </button>
         </div>
       </div>
+
+      {activeTab === "losers" && (
+        <div className="mt-3 flex items-center justify-end">
+          <label className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+            Sort by
+            <select
+              value={loserSortBy}
+              onChange={(event) => setLoserSortBy(event.target.value as "percentage" | "amount")}
+              className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 outline-none ring-brand-200 transition focus:ring-2"
+            >
+              <option value="percentage">Percentage</option>
+              <option value="amount">Amount</option>
+            </select>
+          </label>
+        </div>
+      )}
 
       <div className="mt-4 overflow-x-auto">
         {activeTab === "holders" ? (

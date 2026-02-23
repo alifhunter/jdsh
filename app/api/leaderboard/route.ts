@@ -59,12 +59,16 @@ export async function GET(request: NextRequest) {
     const entries = await prisma.holdingEntry.findMany();
     const { stats, top10, hiddenCount, ranked } = buildLeaderboard(entries);
     const market = await getLatestEmitenPrice(EMITEN_NAME);
-    const top10Losers = market.price !== null ? buildTopLosers(ranked, market.price) : [];
+    const top10LosersByPercentage =
+      market.price !== null ? buildTopLosers(ranked, market.price, "percentage") : [];
+    const top10LosersByAmount =
+      market.price !== null ? buildTopLosers(ranked, market.price, "amount") : [];
 
     const response: LeaderboardResponse = {
       stats,
       top10: top10.map(maskRankedEntry),
-      top10Losers: top10Losers.map(maskLoserEntry),
+      top10LosersByPercentage: top10LosersByPercentage.map(maskLoserEntry),
+      top10LosersByAmount: top10LosersByAmount.map(maskLoserEntry),
       hiddenCount,
       market
     };

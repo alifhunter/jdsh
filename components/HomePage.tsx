@@ -175,7 +175,8 @@ export function HomePage() {
                   ) : (
                     <LeaderboardTable
                       top10={data.top10}
-                      top10Losers={data.top10Losers}
+                      top10LosersByPercentage={data.top10LosersByPercentage}
+                      top10LosersByAmount={data.top10LosersByAmount}
                       currentPrice={data.market.price}
                       hiddenCount={data.hiddenCount}
                     />

@@ -109,6 +109,7 @@ export function findMyRank(
 export function buildTopLosers(
   ranked: RankedLeaderboardEntry[],
   marketPrice: number,
+  sortBy: "percentage" | "amount" = "percentage",
   limit = TOP_LIMIT
 ): TopLoserEntry[] {
   const withPnl = ranked
@@ -127,6 +128,18 @@ export function buildTopLosers(
       };
     })
     .sort((a, b) => {
+      if (sortBy === "amount") {
+        if (a.pnlNominal !== b.pnlNominal) {
+          return a.pnlNominal - b.pnlNominal;
+        }
+
+        if (a.pnlPercent !== b.pnlPercent) {
+          return a.pnlPercent - b.pnlPercent;
+        }
+
+        return a.usernameKey.localeCompare(b.usernameKey);
+      }
+
       if (a.pnlPercent !== b.pnlPercent) {
         return a.pnlPercent - b.pnlPercent;
       }

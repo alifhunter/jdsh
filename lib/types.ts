@@ -48,7 +48,8 @@ export type MyRankResult = {
 export type LeaderboardResponse = {
   stats: LeaderboardStats;
   top10: RankedLeaderboardEntry[];
-  top10Losers: TopLoserEntry[];
+  top10LosersByPercentage: TopLoserEntry[];
+  top10LosersByAmount: TopLoserEntry[];
   hiddenCount: number;
   market: MarketPriceSnapshot;
   myRank?: MyRankResult;
