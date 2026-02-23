@@ -15,7 +15,8 @@ Web app leaderboard holder untuk 1 emiten dengan stack:
 - Tab `Top 10 Loser` berdasarkan perbandingan avg user vs harga sekarang.
 - Harga terakhir emiten ditarik server-side dari Google Finance (tanpa API key).
 - Submit entry holder (username unik case-insensitive, max 200 karakter).
-- Semua data leaderboard publik dimasking otomatis (blur mode always-on untuk entry lama dan baru).
+- Semua username di leaderboard publik dimasking otomatis (angka seperti lots, nominal, P/L tetap tampil).
+- Saat submit, username diverifikasi ke Reddit dan ditolak jika akun tidak ditemukan.
 - Tab kanan dipisah: `Submit Entry` dan `Check My Rank`.
 - Total nominal dihitung otomatis dari rumus `lots * 100 * avgPrice` saat submit.
 - Kartu "Posisimu" setelah submit berhasil.
@@ -46,6 +47,7 @@ npm install
 cp .env.example .env
 # DATABASE_URL: pooled URL (runtime/serverless)
 # DIRECT_URL: direct URL (migrations)
+# REDDIT_CHECK_MODE: "soft" (default) atau "strict"
 ```
 
 3. Jalankan migration:

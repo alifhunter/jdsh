@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { MAX_MONEY_VALUE } from "@/lib/constants";
 import { buildLeaderboard } from "@/lib/leaderboard";
 import { prisma } from "@/lib/prisma";
+import { checkRedditUserExists } from "@/lib/reddit";
 import { entryInputSchema, normalizeUsername } from "@/lib/schemas";
 import type { PostEntryResponse } from "@/lib/types";
 
@@ -37,6 +38,33 @@ export async function POST(request: Request) {
         { error: "Username sudah digunakan, pilih username lain." },
         { status: 409 }
       );
+    }
+
+    const redditUserStatus = await checkRedditUserExists(usernameDisplay);
+
+    if (redditUserStatus === "not_found") {
+      return NextResponse.json(
+        {
+          error: "Validasi input gagal.",
+          fieldErrors: {
+            username: ["Akun Reddit tidak ditemukan."]
+          }
+        },
+        { status: 400 }
+      );
+    }
+
+    if (redditUserStatus === "unavailable") {
+      const checkMode = (process.env.REDDIT_CHECK_MODE ?? "soft").toLowerCase();
+
+      if (checkMode === "strict") {
+        return NextResponse.json(
+          { error: "Gagal verifikasi akun Reddit. Coba lagi beberapa saat." },
+          { status: 503 }
+        );
+      }
+
+      console.warn("Reddit verification unavailable, continuing in soft mode.");
     }
 
     const avgPrice = new Prisma.Decimal(parsed.data.avgPrice);

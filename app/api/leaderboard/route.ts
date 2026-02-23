@@ -16,9 +16,9 @@ function maskRankedEntry(entry: RankedLeaderboardEntry): RankedLeaderboardEntry 
     usernameKey: `blurred-${entry.rank}`,
     isBlurred: true,
     isMasked: true,
-    lots: 0,
-    avgPrice: 0,
-    totalNominal: 0
+    lots: entry.lots,
+    avgPrice: entry.avgPrice,
+    totalNominal: entry.totalNominal
   };
 }
 
@@ -29,11 +29,11 @@ function maskLoserEntry(entry: TopLoserEntry): TopLoserEntry {
     usernameKey: `blurred-loss-${entry.lossRank}`,
     isBlurred: true,
     isMasked: true,
-    lots: 0,
-    avgPrice: 0,
-    totalNominal: 0,
-    pnlPercent: 0,
-    pnlNominal: 0
+    lots: entry.lots,
+    avgPrice: entry.avgPrice,
+    totalNominal: entry.totalNominal,
+    pnlPercent: entry.pnlPercent,
+    pnlNominal: entry.pnlNominal
   };
 }
 
