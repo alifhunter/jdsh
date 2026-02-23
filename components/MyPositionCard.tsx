@@ -19,6 +19,10 @@ export function MyPositionCard({ myPosition }: MyPositionCardProps) {
           <span className="font-semibold">Username:</span> {myPosition.entry.usernameDisplay}
         </p>
         <p>
+          <span className="font-semibold">Blur Mode:</span>{" "}
+          {myPosition.entry.isBlurred ? "Aktif" : "Nonaktif"}
+        </p>
+        <p>
           <span className="font-semibold">Lots:</span> {formatInteger(myPosition.entry.lots)}
         </p>
         <p>

@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+import { MAX_MONEY_VALUE } from "@/lib/constants";
 import { buildLeaderboard } from "@/lib/leaderboard";
 import { prisma } from "@/lib/prisma";
 import { entryInputSchema, normalizeUsername } from "@/lib/schemas";
@@ -38,13 +39,29 @@ export async function POST(request: Request) {
       );
     }
 
+    const avgPrice = new Prisma.Decimal(parsed.data.avgPrice);
+    const totalNominal = avgPrice.mul(parsed.data.lots).mul(100);
+
+    if (totalNominal.gt(new Prisma.Decimal(MAX_MONEY_VALUE))) {
+      return NextResponse.json(
+        {
+          error: "Validasi input gagal.",
+          fieldErrors: {
+            avgPrice: ["Nilai terlalu besar"]
+          }
+        },
+        { status: 400 }
+      );
+    }
+
     const saved = await prisma.holdingEntry.create({
       data: {
         usernameDisplay,
         usernameKey,
+        isBlurred: parsed.data.blur,
         lots: parsed.data.lots,
-        avgPrice: new Prisma.Decimal(parsed.data.avgPrice),
-        totalNominal: new Prisma.Decimal(parsed.data.totalNominal)
+        avgPrice,
+        totalNominal
       }
     });
 

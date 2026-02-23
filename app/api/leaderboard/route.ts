@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { buildLeaderboard, findMyRank } from "@/lib/leaderboard";
+import { EMITEN_NAME } from "@/lib/constants";
+import { buildLeaderboard, buildTopLosers, findMyRank } from "@/lib/leaderboard";
+import { getLatestEmitenPrice } from "@/lib/market";
 import { prisma } from "@/lib/prisma";
 import { normalizeUsername, USERNAME_REGEX } from "@/lib/schemas";
 import type { LeaderboardResponse } from "@/lib/types";
@@ -28,11 +30,15 @@ export async function GET(request: NextRequest) {
 
     const entries = await prisma.holdingEntry.findMany();
     const { stats, top10, hiddenCount, ranked } = buildLeaderboard(entries);
+    const market = await getLatestEmitenPrice(EMITEN_NAME);
+    const top10Losers = market.price !== null ? buildTopLosers(ranked, market.price) : [];
 
     const response: LeaderboardResponse = {
       stats,
       top10,
-      hiddenCount
+      top10Losers,
+      hiddenCount,
+      market
     };
 
     if (usernameKey) {

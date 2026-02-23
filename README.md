@@ -12,8 +12,12 @@ Web app leaderboard holder untuk 1 emiten dengan stack:
   - lots desc
   - totalNominal desc
   - usernameKey asc
-- Submit entry holder (username unik case-insensitive).
-- Warning non-blocking jika total nominal terlihat tidak konsisten terhadap rumus `lots * 100 * avgPrice`.
+- Tab `Top 10 Loser` berdasarkan perbandingan avg user vs harga sekarang.
+- Harga terakhir emiten ditarik server-side dari Google Finance (tanpa API key).
+- Submit entry holder (username unik case-insensitive, max 200 karakter).
+- Opsi checkbox `blur` untuk menyamarkan row user di leaderboard.
+- Tab kanan dipisah: `Submit Entry` dan `Check My Rank`.
+- Total nominal dihitung otomatis dari rumus `lots * 100 * avgPrice` saat submit.
 - Kartu "Posisimu" setelah submit berhasil.
 - Holder selain Top 10 disembunyikan, namun tetap dihitung dalam statistik.
 
@@ -22,6 +26,7 @@ Model `HoldingEntry`:
 - `id` (uuid)
 - `usernameDisplay`
 - `usernameKey` (unique, lowercase + trim)
+- `isBlurred` (boolean, default false)
 - `lots` (int >= 1)
 - `avgPrice` (decimal >= 0)
 - `totalNominal` (decimal >= 0)
@@ -93,8 +98,9 @@ Dengan ini deployment tidak bergantung pada filesystem persisten dan tetap aman 
 - `npm run migrate:deploy`
 
 ## Catatan Validasi
-- Regex username: `/^[A-Za-z0-9_]{1,20}$/`
+- Regex username: `/^[A-Za-z0-9_]{1,200}$/`
 - Batas ekstrem:
   - `lots <= 10_000_000`
-  - `avgPrice` dan `totalNominal` <= `9_999_999_999_999.99`
+  - `avgPrice <= 9_999_999_999_999.99`
+  - hasil hitung `lots * 100 * avgPrice <= 9_999_999_999_999.99`
 - Error duplicate username: `Username sudah digunakan, pilih username lain.`

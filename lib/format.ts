@@ -24,3 +24,8 @@ export function formatDecimal(value: number): string {
 export function formatRupiah(value: number): string {
   return rupiahFormatter.format(value);
 }
+
+export function formatPercent(value: number): string {
+  const sign = value > 0 ? "+" : "";
+  return `${sign}${decimalFormatter.format(value)}%`;
+}

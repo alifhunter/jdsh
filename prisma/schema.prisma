@@ -13,6 +13,7 @@ model HoldingEntry {
   id              String   @id @default(uuid())
   usernameDisplay String
   usernameKey     String   @unique
+  isBlurred       Boolean  @default(false)
   lots            Int
   avgPrice        Decimal  @db.Decimal(20, 2)
   totalNominal    Decimal  @db.Decimal(20, 2)

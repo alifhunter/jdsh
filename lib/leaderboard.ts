@@ -5,7 +5,8 @@ import type {
   LeaderboardEntry,
   LeaderboardStats,
   MyRankResult,
-  RankedLeaderboardEntry
+  RankedLeaderboardEntry,
+  TopLoserEntry
 } from "@/lib/types";
 
 function toNumber(value: unknown): number {
@@ -17,6 +18,7 @@ export function serializeEntry(entry: HoldingEntry): LeaderboardEntry {
     id: entry.id,
     usernameDisplay: entry.usernameDisplay,
     usernameKey: entry.usernameKey,
+    isBlurred: entry.isBlurred,
     lots: entry.lots,
     avgPrice: toNumber(entry.avgPrice),
     totalNominal: toNumber(entry.totalNominal),
@@ -92,6 +94,7 @@ export function findMyRank(
       id: found.id,
       usernameDisplay: found.usernameDisplay,
       usernameKey: found.usernameKey,
+      isBlurred: found.isBlurred,
       lots: found.lots,
       avgPrice: found.avgPrice,
       totalNominal: found.totalNominal,
@@ -99,4 +102,43 @@ export function findMyRank(
       updatedAt: found.updatedAt
     }
   };
+}
+
+export function buildTopLosers(
+  ranked: RankedLeaderboardEntry[],
+  marketPrice: number,
+  limit = TOP_LIMIT
+): TopLoserEntry[] {
+  const withPnl = ranked
+    .filter((entry) => entry.avgPrice > 0)
+    .map((entry) => {
+      const positionSize = entry.lots * 100;
+      const pnlNominal = positionSize * (marketPrice - entry.avgPrice);
+      const pnlPercent = ((marketPrice - entry.avgPrice) / entry.avgPrice) * 100;
+
+      return {
+        ...entry,
+        overallRank: entry.rank,
+        marketPrice,
+        pnlNominal: Number(pnlNominal.toFixed(2)),
+        pnlPercent: Number(pnlPercent.toFixed(2))
+      };
+    })
+    .sort((a, b) => {
+      if (a.pnlPercent !== b.pnlPercent) {
+        return a.pnlPercent - b.pnlPercent;
+      }
+
+      if (a.pnlNominal !== b.pnlNominal) {
+        return a.pnlNominal - b.pnlNominal;
+      }
+
+      return a.usernameKey.localeCompare(b.usernameKey);
+    })
+    .slice(0, limit);
+
+  return withPnl.map((entry, index) => ({
+    ...entry,
+    lossRank: index + 1
+  }));
 }
