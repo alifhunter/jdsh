@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { EmptyLeaderboardState } from "@/components/EmptyLeaderboardState";
 import { LeaderboardTable } from "@/components/LeaderboardTable";
 import { MyPositionCard } from "@/components/MyPositionCard";
 import { SubmitForm } from "@/components/SubmitForm";
@@ -85,17 +86,19 @@ export function HomePage() {
     }
   };
 
+  const isEmptyLeaderboard = data ? data.stats.holdersCount === 0 : false;
+
   return (
     <main className="min-h-screen px-4 pb-14 pt-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <header className="rounded-3xl border border-brand-100 bg-white/80 p-6 shadow-card backdrop-blur sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">
-            Single Leaderboard
+            Pesona Kabel Cabul
           </p>
           <h1 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
             Leaderboard Holder {EMITEN_NAME}
           </h1>
-          <p className="mt-2 text-sm text-slate-600">Data bersifat self-reported.</p>
+          <p className="mt-2 text-sm text-slate-600">iseng iseng aja xixi.</p>
         </header>
 
         <div className="mt-6 space-y-6">
@@ -117,7 +120,11 @@ export function HomePage() {
 
               <section className="grid gap-6 lg:grid-cols-[1.55fr_1fr]">
                 <div>
-                  <LeaderboardTable top10={data.top10} hiddenCount={data.hiddenCount} />
+                  {isEmptyLeaderboard ? (
+                    <EmptyLeaderboardState />
+                  ) : (
+                    <LeaderboardTable top10={data.top10} hiddenCount={data.hiddenCount} />
+                  )}
                 </div>
 
                 <div className="space-y-6">

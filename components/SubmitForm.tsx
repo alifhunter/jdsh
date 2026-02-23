@@ -100,14 +100,14 @@ export function SubmitForm({ onCreated }: SubmitFormProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-card">
       <h2 className="text-xl font-semibold text-ink">Submit Entry</h2>
-      <p className="mt-1 text-sm text-slate-500">
+      {/* <p className="mt-1 text-sm text-slate-500">
         Username unik, valid: huruf/angka/underscore, maksimal 20 karakter.
-      </p>
+      </p> */}
 
       <form className="mt-4 space-y-4" onSubmit={onSubmit} noValidate>
         <div>
           <label htmlFor="username" className="text-sm font-medium text-slate-700">
-            Username
+            Username u/
           </label>
           <input
             id="username"

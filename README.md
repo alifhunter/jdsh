@@ -35,11 +35,12 @@ Model `HoldingEntry`:
 npm install
 ```
 
-2. Set environment variable `DATABASE_URL` ke PostgreSQL lokal/Neon/Supabase:
+2. Set environment variable `DATABASE_URL` dan `DIRECT_URL` ke PostgreSQL lokal/Neon/Supabase:
 
 ```bash
 cp .env.example .env
-# lalu edit DATABASE_URL
+# DATABASE_URL: pooled URL (runtime/serverless)
+# DIRECT_URL: direct URL (migrations)
 ```
 
 3. Jalankan migration:
@@ -48,7 +49,7 @@ cp .env.example .env
 npx prisma migrate dev
 ```
 
-4. Seed data dummy (15 entry):
+4. Kosongkan data leaderboard (opsional, useful untuk reset):
 
 ```bash
 npx prisma db seed
@@ -64,7 +65,7 @@ Akses: `http://localhost:3000`
 
 ## Deploy ke Vercel (Serverless)
 1. Buat database PostgreSQL (Vercel Postgres / Neon / Supabase).
-2. Set `DATABASE_URL` di Vercel Project Environment Variables.
+2. Set `DATABASE_URL` dan `DIRECT_URL` di Vercel Project Environment Variables.
 3. Pastikan Prisma client ter-generate saat build:
    - Sudah ada script `postinstall: prisma generate`.
 4. Jalankan migration production dengan:

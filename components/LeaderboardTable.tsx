@@ -6,6 +6,10 @@ type LeaderboardTableProps = {
   hiddenCount: number;
 };
 
+function getRedditProfileUrl(username: string) {
+  return `https://reddit.com/u/${encodeURIComponent(username)}`;
+}
+
 export function LeaderboardTable({ top10, hiddenCount }: LeaderboardTableProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-card">
@@ -34,7 +38,16 @@ export function LeaderboardTable({ top10, hiddenCount }: LeaderboardTableProps) 
               top10.map((entry) => (
                 <tr key={entry.id} className="border-b border-slate-100 last:border-0">
                   <td className="py-3 pr-4 font-semibold text-brand-700">#{entry.rank}</td>
-                  <td className="py-3 pr-4 font-medium text-ink">{entry.usernameDisplay}</td>
+                  <td className="py-3 pr-4 font-medium">
+                    <a
+                      href={getRedditProfileUrl(entry.usernameDisplay)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-ink underline-offset-4 transition hover:text-brand-700 hover:underline"
+                    >
+                      {entry.usernameDisplay}
+                    </a>
+                  </td>
                   <td className="py-3 pr-4 text-slate-700">{formatInteger(entry.lots)}</td>
                   <td className="py-3 pr-4 text-slate-700">{formatDecimal(entry.avgPrice)}</td>
                   <td className="py-3 font-semibold text-slate-800">
