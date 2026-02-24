@@ -30,6 +30,11 @@ export type LeaderboardStats = {
   totalNominal: number;
 };
 
+export type LossHighlight = {
+  totalNominalLoss: number | null;
+  losingHoldersCount: number;
+};
+
 export type MarketPriceSnapshot = {
   emiten: string;
   exchange: string;
@@ -47,6 +52,7 @@ export type MyRankResult = {
 
 export type LeaderboardResponse = {
   stats: LeaderboardStats;
+  lossHighlight: LossHighlight;
   top10: RankedLeaderboardEntry[];
   top10LosersByPercentage: TopLoserEntry[];
   top10LosersByAmount: TopLoserEntry[];

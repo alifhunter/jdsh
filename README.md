@@ -17,6 +17,7 @@ Web app leaderboard holder untuk 1 emiten dengan stack:
 - Submit entry holder (username unik case-insensitive, max 200 karakter).
 - Semua username di leaderboard publik dimasking otomatis (angka seperti lots, nominal, P/L tetap tampil).
 - Saat submit, username diverifikasi ke Reddit: ditolak jika akun tidak ditemukan atau suspended.
+- Tool audit Reddit khusus development: single check, bulk audit, dry-run clean, execute clean.
 - Tab kanan dipisah: `Submit Entry` dan `Check My Rank`.
 - Total nominal dihitung otomatis dari rumus `lots * 100 * avgPrice` saat submit.
 - Kartu "Posisimu" setelah submit berhasil.
@@ -48,6 +49,8 @@ cp .env.example .env
 # DATABASE_URL: pooled URL (runtime/serverless)
 # DIRECT_URL: direct URL (migrations)
 # REDDIT_CHECK_MODE: "strict" (default) atau "soft"
+# REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET: optional, untuk Reddit OAuth app credentials
+# REDDIT_USER_AGENT: optional override User-Agent (disarankan isi by u/username)
 ```
 
 3. Jalankan migration:
@@ -69,6 +72,17 @@ npm run dev
 ```
 
 Akses: `http://localhost:3000`
+
+### Tool audit Reddit (development only)
+- Buka `http://localhost:3000/dev/reddit-audit`
+- Fitur:
+  - Single username check (`exists`, `not_found`, `suspended`, `unavailable`)
+  - Bulk audit username dari database
+  - Pilihan check method: `public` (default), `auto`, `oauth`
+  - Clean invalid entries dengan 2 tahap:
+    - `Dry Run Clean` untuk preview kandidat hapus
+    - `Execute Clean` setelah ketik konfirmasi `CLEAN`
+- Route dan UI ini otomatis diblok di production (`NODE_ENV !== development`).
 
 ## Deploy ke Vercel (Serverless)
 1. Buat database PostgreSQL (Vercel Postgres / Neon / Supabase).

@@ -10,7 +10,7 @@ import { SubmitForm } from "@/components/SubmitForm";
 import { SummaryCards } from "@/components/SummaryCards";
 import { Toast } from "@/components/Toast";
 import { EMITEN_EXCHANGE, EMITEN_NAME } from "@/lib/constants";
-import { formatRupiah } from "@/lib/format";
+import { formatInteger, formatRupiah } from "@/lib/format";
 import type {
   ApiErrorResponse,
   LeaderboardResponse,
@@ -150,6 +150,30 @@ export function HomePage() {
             </div>
           </div>
         </header>
+
+        {data && (
+          <section className="relative mt-4 overflow-hidden rounded-3xl border border-red-500/40 bg-gradient-to-br from-red-700 via-red-950 to-black p-5 text-white shadow-[0_30px_70px_-35px_rgba(239,68,68,0.95)] sm:p-6">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-red-500/25 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-12 left-16 h-32 w-32 rounded-full bg-red-300/10 blur-3xl" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0)_32%,rgba(255,255,255,0.09)_68%,rgba(255,255,255,0)_100%)]" />
+
+            <div className="relative z-10 flex flex-col gap-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-red-100/90">
+                Highlight - Total Nominal Loss
+              </p>
+              <p className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
+                {data.lossHighlight.totalNominalLoss === null
+                  ? "N/A"
+                  : formatRupiah(data.lossHighlight.totalNominalLoss)}
+              </p>
+              <p className="text-xs text-red-100/85">
+                {data.lossHighlight.totalNominalLoss === null
+                  ? "Belum bisa dihitung karena harga saat ini belum tersedia."
+                  : `Akumulasi ${formatInteger(data.lossHighlight.losingHoldersCount)} holder rugi dari seluruh entry.`}
+              </p>
+            </div>
+          </section>
+        )}
 
         <div className="mt-6 space-y-6">
           {error && (

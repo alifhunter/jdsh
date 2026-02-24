@@ -59,13 +59,45 @@ export async function GET(request: NextRequest) {
     const entries = await prisma.holdingEntry.findMany();
     const { stats, top10, hiddenCount, ranked } = buildLeaderboard(entries);
     const market = await getLatestEmitenPrice(EMITEN_NAME);
+    const marketPrice = market.price;
     const top10LosersByPercentage =
-      market.price !== null ? buildTopLosers(ranked, market.price, "percentage") : [];
+      marketPrice !== null ? buildTopLosers(ranked, marketPrice, "percentage") : [];
     const top10LosersByAmount =
-      market.price !== null ? buildTopLosers(ranked, market.price, "amount") : [];
+      marketPrice !== null ? buildTopLosers(ranked, marketPrice, "amount") : [];
+
+    const lossHighlight =
+      marketPrice === null
+        ? {
+            totalNominalLoss: null,
+            losingHoldersCount: 0
+          }
+        : ranked.reduce(
+            (accumulator, entry) => {
+              const pnlNominal = entry.lots * 100 * (marketPrice - entry.avgPrice);
+              if (pnlNominal < 0) {
+                return {
+                  totalNominalLoss: accumulator.totalNominalLoss + pnlNominal,
+                  losingHoldersCount: accumulator.losingHoldersCount + 1
+                };
+              }
+
+              return accumulator;
+            },
+            {
+              totalNominalLoss: 0,
+              losingHoldersCount: 0
+            }
+          );
 
     const response: LeaderboardResponse = {
       stats,
+      lossHighlight: {
+        totalNominalLoss:
+          lossHighlight.totalNominalLoss === null
+            ? null
+            : Number(lossHighlight.totalNominalLoss.toFixed(2)),
+        losingHoldersCount: lossHighlight.losingHoldersCount
+      },
       top10: top10.map(maskRankedEntry),
       top10LosersByPercentage: top10LosersByPercentage.map(maskLoserEntry),
       top10LosersByAmount: top10LosersByAmount.map(maskLoserEntry),
